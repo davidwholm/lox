@@ -1,10 +1,10 @@
 #lang brag
 
-program : expression*
+program : expression
 
-expression : literal | unary | binary | grouping
+@expression : literal | unary | binary | grouping
 literal : NUMBER | STRING | "true" | "false" | "nil"
-grouping : /"(" expression /")"
+@grouping : /"(" expression /")"
 unary : unary-operator expression
 unary-operator : "-" | "!"
 binary : expression binary-operator expression

@@ -2,4 +2,5 @@
 
 (module reader racket/base
   (require "reader.rkt")
-  (provide read-syntax))
+  (provide read-syntax
+           get-info))

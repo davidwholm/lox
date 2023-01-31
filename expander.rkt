@@ -5,7 +5,7 @@
                      racket/function))
 
 (provide (rename-out [lox-module-begin #%module-begin]) #%datum #%top
-         program grouping expression literal binary unary binary-operator unary-operator)
+         program literal binary unary binary-operator unary-operator)
 
 (begin-for-syntax
   (define operator-table
@@ -57,12 +57,9 @@
      (begin
        expr ...))])
 
-(define-passthrough-parsers
-  (grouping expr)
-  (expression expr))
-
 (define-syntax-parser literal
-  [(_ e:number)
+  [(_ (~or e:number
+           e:string))
    (syntax/loc this-syntax
      e)]
   [(_ (~datum true))

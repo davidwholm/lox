@@ -1,27 +1,18 @@
 #lang racket/base
 
 (require brag/support
-         racket/function)
+         racket/function
+         (prefix-in a: "lex-abbrevs.rkt"))
 
 (provide make-tokenizer)
 
-(define-lex-abbrevs
-  [punctuation (:or "(" ")" "{" "}" "," "." ";")]
-  [operator (:or "!" "!=" "=" "==" ">" ">=" "<" "<=" "-" "+" "/" "*")]
-  [keyword (:or "and" "class" "else" "false" "fun" "for" "if" "or" "print" "return" "super" "this" "var" "while" "true" "false" "nil")]
-  [identifier (:: alphabetic (:* (:or alphabetic numeric)))]
-  [string (:: #\" (:* (complement #\")) #\")]
-  [number (:: (:/ "1" "9") (:* numeric))]
-  [comment (:: "//" (:* (complement #\newline)) #\newline)]
-  [block-comment (:: "/*" (:* (complement "*/")) "*/")])
-
 (define lox-lexer
   (lexer-srcloc
-   [(:or punctuation operator keyword) (token lexeme (string->symbol lexeme))]
-   [identifier (token 'IDENTIFIER (string->symbol lexeme))]
-   [string (token 'STRING (trim-ends "\"" lexeme "\""))]
-   [number (token 'NUMBER (string->number lexeme))]
-   [(:or comment block-comment whitespace) (lox-lexer input-port)]))
+   [(:or a:punctuation a:parenthesis a:operator a:keyword) (token lexeme (string->symbol lexeme))]
+   [a:identifier (token 'IDENTIFIER (string->symbol lexeme))]
+   [a:string (token 'STRING (trim-ends "\"" lexeme "\""))]
+   [a:number (token 'NUMBER (string->number lexeme))]
+   [(:or a:comment a:block-comment whitespace) (lox-lexer input-port)]))
 
 (define (make-tokenizer port [path #f])
   (port-count-lines! port)
